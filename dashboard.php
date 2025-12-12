@@ -1,41 +1,34 @@
 <?php
-// Simulation de données PHP (Backend vers Frontend)
-$articles = [
-    [
-        'id' => 1,
-        'author' => 'Admin',
-        'title' => 'Natus harum',
-        'image' => 'https://picsum.photos/50/50?random=1',
-        'rating' => 4,
-        'active' => true
-    ],
-    [
-        'id' => 2,
-        'author' => 'Admin',
-        'title' => 'Nulla dolore',
-        'image' => 'https://picsum.photos/50/50?random=2',
-        'rating' => 3,
-        'active' => false
-    ],
-    [
-        'id' => 3,
-        'author' => 'Admin',
-        'title' => 'Culpa sint',
-        'image' => 'https://picsum.photos/50/50?random=3',
-        'rating' => 5,
-        'active' => false
-    ],
-    [
-        'id' => 4,
-        'author' => 'Admin',
-        'title' => 'Harum culpa',
-        'image' => 'https://picsum.photos/50/50?random=4',
-        'rating' => 4,
-        'active' => true
-    ],
-];
-?>
+include "db.php";
 
+if (isset($_POST['id']) && isset($_POST['status'])) {
+    $id = intval($_POST['id']);
+    $status = intval($_POST['status']);
+    try {
+        $sql = "UPDATE postes SET status = :status WHERE id_artc = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':status' => $status, ':id' => $id]);
+        echo "success";
+        exit;
+    } catch (PDOException $e) {
+        echo "error";
+        exit;
+    }
+}
+
+
+try {
+    $sql = "SELECT postes.*, users.username 
+            FROM postes 
+            LEFT JOIN users ON postes.user_id = users.user_id 
+            ORDER BY postes.id_artc DESC";
+            
+    $stmt = $pdo->query($sql);
+    $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Erreur de récupération des articles : " . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +39,6 @@ $articles = [
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Couleurs personnalisées basées sur l'image bookShine */
         :root {
             --sidebar-bg: #1e1b2e;
             --purple-primary: #7c3aed;
@@ -56,16 +48,14 @@ $articles = [
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); }
         .sidebar-bg { background-color: var(--sidebar-bg); }
         
-        /* Style spécifique pour l'élément actif du menu (effet courbé) */
-        .menu-item.active {
+        .menu-item.active11 {
             background-color: #f3f4f6;
             color: #1f2937;
             border-top-left-radius: 30px;
             border-bottom-left-radius: 30px;
             position: relative;
         }
-        /* Petit hack pour masquer les coins du background sombre */
-        .menu-item.active::before, .menu-item.active::after {
+        .menu-item.active11::before, .menu-item.active11::after {
             content: '';
             position: absolute;
             right: 0;
@@ -74,10 +64,9 @@ $articles = [
             background: transparent;
             pointer-events: none;
         }
-        .menu-item.active::before { top: -20px; box-shadow: 10px 10px 0 #f3f4f6; border-bottom-right-radius: 20px; }
-        .menu-item.active::after { bottom: -20px; box-shadow: 10px -10px 0 #f3f4f6; border-top-right-radius: 20px; }
+        .menu-item.active11::before { top: -20px; box-shadow: 10px 10px 0 #f3f4f6; border-bottom-right-radius: 20px; }
+        .menu-item.active11::after { bottom: -20px; box-shadow: 10px -10px 0 #f3f4f6; border-top-right-radius: 20px; }
 
-        /* Toggle Switch Custom */
         .toggle-checkbox:checked {
             right: 0;
             border-color: #7c3aed;
@@ -119,7 +108,7 @@ $articles = [
                         </a>
                     </li>
                     <li class="relative">
-                        <a href="#" class="menu-item active flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
+                        <a href="#" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
                             <i class="fa-solid fa-file-lines"></i> Articles
                         </a>
                     </li>
@@ -176,11 +165,11 @@ $articles = [
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div class="text-3xl font-bold text-gray-800 mb-1">153</div>
+                    <div class="text-3xl font-bold text-gray-800 mb-1">20</div>
                     <div class="text-gray-500 text-sm">Articles</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div class="text-3xl font-bold text-gray-800 mb-1">3846</div>
+                    <div class="text-3xl font-bold text-gray-800 mb-1">27</div>
                     <div class="text-gray-500 text-sm">Comments</div>
                 </div>
             </div>
@@ -221,46 +210,72 @@ $articles = [
                             <th class="p-4">Author</th>
                             <th class="p-4">Title</th>
                             <th class="p-4">Thumbnail</th>
-                            <th class="p-4">Rating</th>
-                            <th class="p-4">Active</th>
+                            <th class="p-4">Count_vieu</th>
+                            <th class="p-4">active1</th>
                             <th class="p-4 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                        <?php foreach($articles as $article): ?>
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="p-4">
-                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold"><?= $article['id'] ?></span>
-                            </td>
-                            <td class="p-4">
-                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold"><?= $article['author'] ?></span>
-                            </td>
-                            <td class="p-4"><?= $article['title'] ?></td>
-                            <td class="p-4">
-                                <img src="<?= $article['image'] ?>" class="w-10 h-10 rounded object-cover shadow-sm">
-                            </td>
-                            <td class="p-4 text-gray-300 text-xs">
-                                <?php for($i=1; $i<=5; $i++): ?>
-                                    <i class="fa-solid fa-star <?= $i <= $article['rating'] ? 'text-pink-500' : '' ?>"></i>
-                                <?php endfor; ?>
-                            </td>
-                            <td class="p-4">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                    <input type="checkbox" name="toggle" id="toggle-<?= $article['id'] ?>" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 top-0 left-0" <?= $article['active'] ? 'checked' : '' ?>/>
-                                    <label for="toggle-<?= $article['id'] ?>" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 ease-in-out"></label>
-                                </div>
-                            </td>
-                            <td class="p-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-link"></i></button>
-                                    <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 flex items-center justify-center"><i class="fa-regular fa-eye"></i></button>
-                                    <button class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm"><i class="fa-solid fa-pencil"></i></button>
-                                    <button class="w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 flex items-center justify-center shadow-sm"><i class="fa-regular fa-trash-can"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
+    <?php foreach($articles as $article): ?>
+    <tr class="hover:bg-gray-50 transition-colors">
+        <td class="p-4">
+            <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
+                <?= $article['id_artc'] ?>
+            </span>
+        </td>
+
+<td class="p-4">
+    <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600 uppercase">
+            <?= substr($article['username'] ?? 'U', 0, 1) ?>
+        </div>
+        <span class="text-gray-700 font-medium text-sm">
+            <?= htmlspecialchars($article['username'] ?? 'Inconnu') ?>
+        </span>
+    </div>
+</td>
+
+        <td class="p-4"><?= $article['title'] ?></td>
+
+        <td class="p-4">
+            <img src="<?= $article['image_url'] ?>" class="w-10 h-10 rounded object-cover shadow-sm">
+        </td>
+
+        <td class="p-4 text-gray-300 text-xs">
+            <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
+                <?= $article['view_count'] ?>
+            </span>
+        </td>
+
+        <td class="p-4">
+            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                <input type="checkbox"
+                       class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 top-0 left-0"
+                       <?= $article['status'] ? 'checked' : '' ?> />
+                <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 ease-in-out"></label>
+            </div>
+        </td>
+
+        <td class="p-4 text-right">
+            <div class="flex items-center justify-end gap-2">
+                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 flex items-center justify-center">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 flex items-center justify-center">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+                <button class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
+                    <i class="fa-solid fa-pencil"></i>
+                </button>
+                <button class="w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 flex items-center justify-center shadow-sm">
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</tbody>
+
                 </table>
             </div>
 
