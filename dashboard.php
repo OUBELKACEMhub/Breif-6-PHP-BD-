@@ -59,7 +59,7 @@ try {
             content: '';
             position: absolute;
             right: 0;
-            width: 20px;
+            width: 21px;
             height: 20px;
             background: transparent;
             pointer-events: none;
