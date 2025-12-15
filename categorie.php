@@ -1,11 +1,13 @@
 <?php
 include "db.php";
 
+// Logic to update status (Keep this or remove if categories don't have status)
 if (isset($_POST['id']) && isset($_POST['status'])) {
     $id = intval($_POST['id']);
     $status = intval($_POST['status']);
     try {
-        $sql = "UPDATE postes SET status = :status WHERE id_artc = :id";
+        // CHANGE 'categories' AND 'id_cat' TO YOUR ACTUAL TABLE/COLUMN NAMES
+        $sql = "UPDATE categories SET status = :status WHERE id_cat = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([':status' => $status, ':id' => $id]);
         echo "success";
@@ -16,17 +18,20 @@ if (isset($_POST['id']) && isset($_POST['status'])) {
     }
 }
 
-
+// Fetch Categories
 try {
-    $sql = "SELECT postes.*, users.username 
-            FROM postes 
-            LEFT JOIN users ON postes.user_id = users.user_id 
-            ORDER BY postes.id_artc DESC";
-            
-    $stmt = $pdo->query($sql);
-    $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // CHANGE 'categories' TO YOUR TABLE NAME
+    $sql = "SELECT * FROM categories ORDER BY id_cat DESC";
+    
+    // Uncomment the lines below when you have created the table in your DB
+    // $stmt = $pdo->query($sql);
+    // $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // FOR NOW: Empty array so the page loads without error
+    $categories = []; 
+
 } catch (PDOException $e) {
-    die("Erreur de récupération des articles : " . $e->getMessage());
+    die("Erreur de récupération des catégories : " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -34,7 +39,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookShine Dashboard Clone</title>
+    <title>BookShine - Categories</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -48,6 +53,7 @@ try {
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); }
         .sidebar-bg { background-color: var(--sidebar-bg); }
         
+        /* Menu Item Active Style */
         .menu-item.active11 {
             background-color: #f3f4f6;
             color: #1f2937;
@@ -102,13 +108,13 @@ try {
                 </button>
                 
                 <ul class="pl-0 space-y-1">
-                    <li>
-                        <a href="categorie.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
+                    <li class="relative">
+                        <a href="categories.php" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
                             <i class="fa-regular fa-file"></i> Categories
                         </a>
                     </li>
-                    <li class="relative">
-                        <a href="dashboard.php" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
+                    <li>
+                        <a href="dashboard.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
                             <i class="fa-solid fa-file-lines"></i> Articles
                         </a>
                     </li>
@@ -148,7 +154,7 @@ try {
             <div class="flex items-center text-sm text-gray-500">
                 <a href="#" class="text-pink-500 hover:text-pink-600"><i class="fa-solid fa-house"></i></a>
                 <span class="mx-2">/</span>
-                <span class="text-gray-700">Articles</span>
+                <span class="text-gray-700">Categories</span>
             </div>
 
             <div class="flex items-center gap-4">
@@ -161,43 +167,30 @@ try {
         </header>
 
         <div class="flex-1 overflow-y-auto p-8">
-            <h1 class="text-2xl font-semibold text-gray-800 mb-6">Articles</h1>
+            <h1 class="text-2xl font-semibold text-gray-800 mb-6">Categories Management</h1>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div class="text-3xl font-bold text-gray-800 mb-1">31</div>
-                    <div class="text-gray-500 text-sm">Articles</div>
+                    <div class="text-3xl font-bold text-gray-800 mb-1"><?= count($categories) ?></div>
+                    <div class="text-gray-500 text-sm">Total Categories</div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div class="text-3xl font-bold text-gray-800 mb-1">27</div>
-                    <div class="text-gray-500 text-sm">Comments</div>
+                    <div class="text-3xl font-bold text-gray-800 mb-1">0</div>
+                    <div class="text-gray-500 text-sm">Active Categories</div>
                 </div>
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-2">
                     <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-plus"></i> Create
-                    </button>
-                    <button class="bg-white border border-gray-300 text-gray-600 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-50">
-                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                        <i class="fa-solid fa-plus"></i> Add Category
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
                     <button class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-pencil"></i> Import
-                    </button>
-                    <button class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
                         <i class="fa-solid fa-filter"></i> Filters
                     </button>
                 </div>
-            </div>
-
-            <div class="flex gap-2 mb-6">
-                <button class="px-4 py-2 bg-white text-gray-700 text-sm rounded-lg border border-gray-200 hover:bg-gray-50">Article with author</button>
-                <button class="px-4 py-2 bg-white text-gray-700 text-sm rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center gap-2">
-                    <i class="fa-solid fa-user-group text-gray-400"></i> Article without an author
-                </button>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -207,85 +200,67 @@ try {
                             <th class="p-4 w-16">
                                 <div class="flex items-center gap-1 cursor-pointer">ID <i class="fa-solid fa-sort"></i></div>
                             </th>
-                            <th class="p-4">Author</th>
-                            <th class="p-4">Title</th>
-                            <th class="p-4">Thumbnail</th>
-                            <th class="p-4">Count_vieu</th>
-                            <th class="p-4">active1</th>
+                            <th class="p-4">Name</th>
+                            <th class="p-4">Description</th>
+                            <th class="p-4">Status</th>
                             <th class="p-4 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-    <?php foreach($articles as $article): ?>
-    <tr class="hover:bg-gray-50 transition-colors">
-        <td class="p-4">
-            <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
-                <?= $article['id_artc'] ?>
-            </span>
-        </td>
+                        <?php if(empty($categories)): ?>
+                            <tr>
+                                <td colspan="5" class="p-8 text-center text-gray-500">
+                                    No categories found. Add one to get started.
+                                </td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach($categories as $category): ?>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="p-4">
+                                    <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
+                                        <?= $category['id_cat'] ?>
+                                    </span>
+                                </td>
 
-<td class="p-4">
-    <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-600 uppercase">
-            <?= substr($article['username'] ?? 'U', 0, 1) ?>
-        </div>
-        <span class="text-gray-700 font-medium text-sm">
-            <?= htmlspecialchars($article['username'] ?? 'Inconnu') ?>
-        </span>
-    </div>
-</td>
+                                <td class="p-4 font-medium">
+                                    <?= htmlspecialchars($category['name']) ?>
+                                </td>
 
-        <td class="p-4"><?= $article['title'] ?></td>
+                                <td class="p-4 text-gray-500">
+                                    <?= htmlspecialchars($category['description'] ?? '-') ?>
+                                </td>
 
-        <td class="p-4">
-            <img src="<?= $article['image_url'] ?>" class="w-10 h-10 rounded object-cover shadow-sm">
-        </td>
+                                <td class="p-4">
+                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <input type="checkbox"
+                                            class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 top-0 left-0"
+                                            <?= ($category['status'] ?? 0) ? 'checked' : '' ?> />
+                                        <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 ease-in-out"></label>
+                                    </div>
+                                </td>
 
-        <td class="p-4 text-gray-300 text-xs">
-            <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">
-                <?= $article['view_count'] ?>
-            </span>
-        </td>
-
-        <td class="p-4">
-            <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input type="checkbox"
-                       class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 top-0 left-0"
-                       <?= $article['status'] ? 'checked' : '' ?> />
-                <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 ease-in-out"></label>
-            </div>
-        </td>
-
-        <td class="p-4 text-right">
-            <div class="flex items-center justify-end gap-2">
-                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 flex items-center justify-center">
-                    <i class="fa-solid fa-link"></i>
-                </button>
-                <button class="w-8 h-8 rounded border border-gray-200 text-gray-500 hover:bg-gray-100 flex items-center justify-center">
-                    <i class="fa-regular fa-eye"></i>
-                </button>
-                <button class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
-                    <i class="fa-solid fa-pencil"></i>
-                </button>
-                <button class="w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 flex items-center justify-center shadow-sm">
-                    <i class="fa-regular fa-trash-can"></i>
-                </button>
-            </div>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</tbody>
-
+                                <td class="p-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
+                                        <button class="w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 flex items-center justify-center shadow-sm">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
                 </table>
             </div>
 
             <div class="mt-4 flex justify-between items-center text-xs text-gray-500">
-                <span>Showing 1 to 4 of 153 results</span>
+                <span>Showing results</span>
                 <div class="flex gap-1">
                     <button class="px-3 py-1 border rounded hover:bg-gray-50">Previous</button>
                     <button class="px-3 py-1 bg-purple-600 text-white rounded">1</button>
-                    <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
                     <button class="px-3 py-1 border rounded hover:bg-gray-50">Next</button>
                 </div>
             </div>
@@ -293,6 +268,6 @@ try {
         </div>
     </main>
 
-   <script src="switchToogle.js"> </script>
+    <script src="switchToogle.js"> </script>
 </body>
 </html>
