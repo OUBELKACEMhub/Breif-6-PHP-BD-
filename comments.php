@@ -120,7 +120,7 @@ try {
                         </a>
                     </li>
                     <li>
-                        <a href="dashboard.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
+                        <a href="articles.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
                             <i class="fa-solid fa-file-lines"></i> Articles
                         </a>
                     </li>
