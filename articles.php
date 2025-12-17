@@ -114,6 +114,10 @@ try {
                     <li><a href="comments.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8"><i class="fa-regular fa-comments"></i> Comments</a></li>
                 </ul>
             </div>
+            <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
+            <ul class="px-3">
+                <li><a href="#" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>
+            </ul>
         </nav>
     </aside>
 

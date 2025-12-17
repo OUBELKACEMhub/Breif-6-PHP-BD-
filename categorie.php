@@ -147,11 +147,11 @@ try {
                 </div>
             </div>
 
-            <div class="flex justify-between gap-4 mb-6">
-                <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
-                    <i class="fa-solid fa-plus"></i> Add Category
-                </button>
-            </div>
+     <div class="flex justify-between gap-4 mb-6">
+    <a href="addCategory.php" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
+        <i class="fa-solid fa-plus"></i> Add Category
+    </a>
+</div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <table class="w-full text-left border-collapse">
@@ -191,17 +191,17 @@ try {
 
                                 <td class="p-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
+                                        <a href="editCategory.php?id=<?= $cat['id_cat'] ?>" class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
                                             <i class="fa-solid fa-pencil"></i>
-                                        </button>
-                                        
-                                        <a href="categories.php?delete=<?= $cat['id_cat'] ?>" 
-                                           onclick="return confirm('Are you sure you want to delete this category?')"
-                                           class="inline-flex w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 items-center justify-center shadow-sm">
+                                        </a>
+
+                                        <a href="categorie.php?delete=<?= $cat['id_cat'] ?>" 
+                                        onclick="return confirm('Are you sure you want to delete this category?')"
+                                        class="inline-flex w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 items-center justify-center shadow-sm">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </a>
                                     </div>
-                                </td>
+                             </td>
                             </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

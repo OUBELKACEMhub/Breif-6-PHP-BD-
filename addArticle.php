@@ -1,7 +1,6 @@
 <?php
 include "db.php";
 
-// Récupération des utilisateurs pour le select
 $users = $pdo->query("SELECT user_id, username FROM users")->fetchAll();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

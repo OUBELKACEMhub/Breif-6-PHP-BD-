@@ -12,6 +12,5 @@
                     this.style.transform = 'translateX(0)';
                 }
             });
-            // Init state
             toggle.dispatchEvent(new Event('change'));
         });
