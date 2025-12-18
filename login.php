@@ -1,3 +1,50 @@
+<?php
+session_start();
+include "db.php";
+
+$error = "";
+
+// if (isset($_SESSION['user_id'])) {
+//     header("Location: articles.php");
+//     exit;
+// }
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+
+    if (!empty($email) && !empty($password)) {
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                
+                if ($password === $user['pass_word']) { 
+                    
+                    $_SESSION['user_id'] = $user['user_id']; 
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
+                
+                    header("Location: articles.php");
+                    exit;
+                } else {
+                    $error = "Mot de passe incorrect.";
+                }
+            } else {
+                $error = "Aucun compte trouvé avec cet email.";
+            }
+        } catch (PDOException $e) {
+            $error = "Erreur de connexion : " . $e->getMessage();
+        }
+    } else {
+        $error = "Veuillez remplir tous les champs.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +84,12 @@
             <p class="text-gray-500 text-sm">Please sign-in to your account</p>
         </div>
 
-      
+        <?php if($error): ?>
+            <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <?= htmlspecialchars($error) ?>
+            </div>
+        <?php endif; ?>
 
         <form method="POST" action="">
             <div class="mb-5">
@@ -47,7 +99,8 @@
                 <input 
                     type="email" 
                     name="email" 
-                    placeholder="E-mail"
+                    placeholder="example@bookshine.com"
+                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all text-sm placeholder-gray-400"
                     required
                 >
@@ -60,7 +113,7 @@
                 <input 
                     type="password" 
                     name="password" 
-                    placeholder="Password"
+                    placeholder="••••••••"
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all text-sm placeholder-gray-400"
                     required
                 >
@@ -69,6 +122,7 @@
             <div class="flex items-center mb-6">
                 <input 
                     id="remember" 
+                    name="remember"
                     type="checkbox" 
                     class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
                 >

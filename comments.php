@@ -1,21 +1,5 @@
 <?php
 include "db.php";
-
-if (isset($_POST['id']) && isset($_POST['status'])) {
-    $id = intval($_POST['id']);
-    $status = intval($_POST['status']);
-    try {
-        $sql = "UPDATE comments SET statues = :status WHERE id_comnt = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':status' => $status, ':id' => $id]);
-        echo "success";
-        exit;
-    } catch (PDOException $e) {
-        echo "error";
-        exit;
-    }
-}
-
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     try {
@@ -100,20 +84,17 @@ try {
                 <span>Dashboard </span>
             </div>
         </div>
-
-        <nav class="flex-1 py-4 overflow-y-auto">
+<nav class="flex-1 py-4 overflow-y-auto">
             <div class="px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">System</div>
-            
-            <div class="px-3">
-                <button class="w-full flex items-center justify-between p-3 bg-purple-600 text-white rounded-lg mb-1">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-newspaper"></i>
-                        <span>Blog</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-up text-xs"></i>
-                </button>
-                
-                <ul class="pl-0 space-y-1">
+                            <button id="blog-toggle" class="w-full flex items-center justify-between p-3 bg-purple-600 text-white rounded-lg mb-1 transition-colors hover:bg-purple-700">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-newspaper"></i>
+                            <span>Blog</span>
+                        </div>
+                        <i id="blog-arrow" class="fa-solid fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+
+                    <ul id="blog-menu" class="pl-0 space-y-1 hidden transition-all duration-300">
                     <li>
                         <a href="categorie.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
                             <i class="fa-regular fa-file"></i> Categories
@@ -126,25 +107,25 @@ try {
                     </li>
                     <li class="relative">
                         <a href="comments.php" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
-                            <i class="fa-solid fa-comments"></i> Comments
+                            <i class="fa-regular fa-comments"></i> Comments
                         </a>
                     </li>
                 </ul>
-            </div>
-
-            <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
-            <ul class="px-3">
-                <li><a href="#" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>
+                 <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
+             <ul class="px-3">
+                <li><a href="users.php" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>
             </ul>
         </nav>
-
+        
         <div class="p-4 border-t border-gray-700">
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-10 h-10 rounded-full bg-blue-100">
                 <div class="overflow-hidden">
                     <h4 class="text-sm font-white text-white">Admin</h4>
                 </div>
-                <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
+                    <a href="login.php">
+                    <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
+                    </a>            
             </div>
         </div>
     </aside>
@@ -182,7 +163,6 @@ try {
                             <th class="p-4">Content</th>
                             <th class="p-4">Article</th>
                             <th class="p-4">Date</th>
-                            <th class="p-4">Status</th>
                             <th class="p-4 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -222,15 +202,6 @@ try {
                                     <?= date('M d, Y', strtotime($comment['Date_cr'])) ?>
                                 </td>
 
-                                <td class="p-4">
-                                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                                        <input type="checkbox"
-                                            class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300 ease-in-out border-gray-300 top-0 left-0"
-                                            onchange="updateStatus(<?= $comment['id_comnt'] ?>, this.checked)"
-                                            <?= ($comment['statues'] ?? 0) ? 'checked' : '' ?> />
-                                        <label class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300 ease-in-out"></label>
-                                    </div>
-                                </td>
 
                                 <td class="p-4 text-right">
                                     <a href="comments.php?delete=<?= $comment['id_comnt'] ?>" 
@@ -248,29 +219,7 @@ try {
             
         </div>
     </main>
-
-    <script>
-        function updateStatus(id, isChecked) {
-            const status = isChecked ? 1 : 0;
-            const formData = new FormData();
-            formData.append('id', id);
-            formData.append('status', status);
-
-            fetch('comments.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                if(data.trim() !== 'success') {
-                    alert('Error updating status');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-    </script>
-    <script src="switchToogle.js"> </script>
-
+    
+    <script src="blog.js"></script>
 </body>
 </html>

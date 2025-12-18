@@ -75,21 +75,19 @@ try {
             </div>
         </div>
 
-        <nav class="flex-1 py-4 overflow-y-auto">
+       <nav class="flex-1 py-4 overflow-y-auto">
             <div class="px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">System</div>
-            
-            <div class="px-3">
-                <button class="w-full flex items-center justify-between p-3 bg-purple-600 text-white rounded-lg mb-1">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-newspaper"></i>
-                        <span>Blog</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-up text-xs"></i>
-                </button>
-                
-                <ul class="pl-0 space-y-1">
+                            <button id="blog-toggle" class="w-full flex items-center justify-between p-3 bg-purple-600 text-white rounded-lg mb-1 transition-colors hover:bg-purple-700">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-newspaper"></i>
+                            <span>Blog</span>
+                        </div>
+                        <i id="blog-arrow" class="fa-solid fa-chevron-down transition-transform duration-300"></i>
+                    </button>
+
+                    <ul id="blog-menu" class="pl-0 space-y-1 hidden transition-all duration-300">
                     <li class="relative">
-                        <a href="categories.php" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
+                        <a href="categorie.php" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
                             <i class="fa-regular fa-file"></i> Categories
                         </a>
                     </li>
@@ -104,22 +102,21 @@ try {
                         </a>
                     </li>
                 </ul>
-            </div>
-
-            <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
+                 <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
             <ul class="px-3">
                 <li><a href="#" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>
             </ul>
         </nav>
-
+        
         <div class="p-4 border-t border-gray-700">
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-10 h-10 rounded-full bg-blue-100">
                 <div class="overflow-hidden">
                     <h4 class="text-sm font-white text-white">Admin</h4>
                 </div>
+               <a href="login.php">
                 <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
-            </div>
+                </a>            </div>
         </div>
     </aside>
 
@@ -191,7 +188,7 @@ try {
 
                                 <td class="p-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="editCategory.php?id=<?= $cat['id_cat'] ?>" class="w-8 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
+                                        <a href="editCategory.php?id=<?= $cat['id_cat'] ?>" class="w-10 h-8 rounded bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center shadow-sm">
                                             <i class="fa-solid fa-pencil"></i>
                                         </a>
 
@@ -211,5 +208,8 @@ try {
             
         </div>
     </main>
+    
+    <script src="blog.js"></script>
 </body>
+    
 </html>
