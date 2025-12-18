@@ -117,7 +117,7 @@ try {
                 <div class="overflow-hidden">
                     <h4 class="text-sm font-white text-white"><?= $role ?></h4>
                 </div>
-               <a href="login.php">
+               <a href="index.php">
                 <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
                 </a>            </div>
         </div>
