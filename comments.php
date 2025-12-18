@@ -14,7 +14,6 @@ if (isset($_GET['delete'])) {
         die("Erreur de suppression : " . $e->getMessage());
     }
 }
-
 try {
     $sql = "SELECT comments.*, users.username, postes.title 
             FROM comments 

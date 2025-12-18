@@ -67,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </textarea>
           </div>
             
-
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Auteur</label>
                 <select name="user_id" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none bg-white">

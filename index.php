@@ -26,7 +26,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_btn'])) {
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['role'] = $user['role'];
                     
-                
                     header("Location: articles.php");
                     exit;
                 } else {

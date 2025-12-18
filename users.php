@@ -95,7 +95,7 @@ try {
         .sidebar-bg { background-color: var(--sidebar-bg); }
         
         .menu-item.active11 {
-            background-color: #f3f4f6;
+            background-color: #c5c9d1ff;
             color: #1f2937;
             border-top-left-radius: 30px;
             border-bottom-left-radius: 30px;

@@ -43,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if(isset($error)): ?>
             <div class="bg-red-100 text-red-700 p-3 rounded mb-4"><?= $error ?></div>
         <?php endif; ?>
-
         <form method="POST" action="">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Nom de la catégorie</label>

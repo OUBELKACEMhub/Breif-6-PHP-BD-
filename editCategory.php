@@ -61,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label class="block text-gray-700 text-sm font-medium mb-2">Nom de la catégorie</label>
                 <input type="text" name="nom_cat" value="<?= htmlspecialchars($category['nom_cat']) ?>" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
             </div>
-
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Description</label>
                 <textarea name="description" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none"><?= htmlspecialchars($category['description']) ?></textarea>

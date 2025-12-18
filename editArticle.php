@@ -7,7 +7,6 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-
 $stmt = $pdo->prepare("SELECT * FROM postes WHERE id_artc = :id");
 $stmt->execute([':id' => $id]);
 $article = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -127,7 +127,7 @@ try {
                     </li>
                     <?php  endif;  ?>
             </ul>
-             <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
+             <div class="mt-5 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
              <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "admin"): ?>
                     <ul class="px-3">
                 <li><a href="users.php" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>

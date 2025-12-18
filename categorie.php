@@ -110,8 +110,7 @@ try {
                 <li><a href="users.php" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>
             </ul>
         </nav>
-        
-        <div class="p-4 border-t border-gray-700">
+         <div class="p-4 border-t border-gray-700">
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-10 h-10 rounded-full bg-blue-100">
                 <div class="overflow-hidden">
