@@ -15,7 +15,6 @@ if (!$article) {
     die("Article introuvable.");
 }
 
-
 $users = $pdo->query("SELECT user_id, username FROM users")->fetchAll();
 $category =$pdo->query("SELECT nom_cat,id_cat FROM category")->fetchAll();
 

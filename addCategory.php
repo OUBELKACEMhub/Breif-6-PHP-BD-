@@ -40,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <a href="categorie.php" class="text-gray-500 hover:text-gray-700"><i class="fa-solid fa-xmark text-xl"></i></a>
         </div>
 
+        
         <?php if(isset($error)): ?>
             <div class="bg-red-100 text-red-700 p-3 rounded mb-4"><?= $error ?></div>
         <?php endif; ?>

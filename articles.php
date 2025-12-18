@@ -118,7 +118,6 @@ try {
                         <i class="fa-solid fa-file-lines"></i> Articles
                     </a>
                 </li>
-                
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
                     <li>
                         <a href="comments.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">

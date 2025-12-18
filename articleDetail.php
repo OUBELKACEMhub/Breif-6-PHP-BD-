@@ -122,7 +122,6 @@ try {
                 </div>
             </div>
         </div>
-
         <div class="mb-9 shadow-lg rounded-2xl overflow-hidden">
             <img src="<?= htmlspecialchars($article['image_url']) ?>" 
                  alt="<?= htmlspecialchars($article['title']) ?>" 

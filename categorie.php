@@ -121,7 +121,6 @@ try {
                 </a>            </div>
         </div>
     </aside>
-
     <main class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-100">
         
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">

@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const blogMenu = document.getElementById('blog-menu');
     const blogArrow = document.getElementById('blog-arrow');
 
-  
     if (blogToggle && blogMenu && blogArrow) {
 
         if (document.querySelector('.active11')) {

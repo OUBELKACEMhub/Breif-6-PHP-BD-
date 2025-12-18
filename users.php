@@ -87,6 +87,7 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        
         :root {
             --sidebar-bg: #1e1b2e;
             --bg-body: #f3f4f6;

@@ -41,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_btn'])) {
         $login_error = "Veuillez remplir tous les champs.";
     }
 }
-
 try {
     $stmtCount = $pdo->query("SELECT COUNT(*) FROM postes");
     $totalArticles = $stmtCount->fetchColumn();
