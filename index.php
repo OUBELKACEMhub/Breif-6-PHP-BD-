@@ -1,12 +1,6 @@
 <?php
-session_start();
 include "db.php";
-
 $login_error = null;
-
-session_start();
-include "db.php";
-
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -203,7 +197,7 @@ try {
                                 </div>
                             <?php endif; ?>
 
-                            <form method="POST" action="index.php">
+                            <form method="POST" action="index.php.php.php.php.php">
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>

@@ -117,7 +117,7 @@ try {
                 <div class="overflow-hidden">
                     <h4 class="text-sm font-white text-white"><?= $role ?></h4>
                 </div>
-               <a href="index.php">
+               <a href="logout.php">
                 <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
                 </a>            </div>
         </div>
@@ -162,7 +162,7 @@ try {
                             </th>
                             <th class="p-4">Category Name</th>
                             <th class="p-4">Description</th>
-                            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
+                            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "admin"): ?>
                             <th class="p-4 text-right">Actions</th>
                             <?php endif; ?>
                         </tr>

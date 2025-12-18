@@ -1,12 +1,11 @@
 <?php
-session_start(); 
 include "db.php";
-
-$current_user_id = $_SESSION['user_id'] ?? 1; 
 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     die("Erreur");
 }
+session_start(); 
+$login = $_SESSION['user_id'] ?? null;
 
 $id_article = intval($_GET['id']);
 
@@ -18,7 +17,7 @@ try {
         
         if (!empty($contenu)) {
             $stmt = $pdo->prepare("INSERT INTO comments (Date_cr, contenu, statues, user_id, id_artc) VALUES (NOW(), ?, 'active', ?, ?)");
-            $stmt->execute([$contenu, $current_user_id, $id_article]);
+            $stmt->execute([$contenu, null, $id_article]);
             
             header("Location: ?id=" . $id_article . "#comments-section");
             exit;
@@ -30,7 +29,7 @@ try {
         $contenu = htmlspecialchars($_POST['contenu']);
         
         $stmt = $pdo->prepare("UPDATE comments SET contenu = ? WHERE id_comnt = ? AND user_id = ?");
-        $stmt->execute([$contenu, $id_comnt, $current_user_id]);
+        $stmt->execute([$contenu, $id_comnt, null]);
         
         header("Location: ?id=" . $id_article . "#comments-section");
         exit;
@@ -66,7 +65,7 @@ try {
     if (isset($_GET['edit_id'])) {
         $edit_id = intval($_GET['edit_id']);
         $stmtEdit = $pdo->prepare("SELECT * FROM comments WHERE id_comnt = ? AND user_id = ?");
-        $stmtEdit->execute([$edit_id, $current_user_id]);
+        $stmtEdit->execute([$edit_id, null ?? 0]);
         $edit_comment = $stmtEdit->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -89,7 +88,7 @@ try {
     <nav class="bg-white border-b border-gray-200 py-4 px-6 mb-8">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <a href="articles.php" class="text-purple-600 font-bold text-lg"><i class="fa-solid fa-book-open"></i> BookShine</a>
-            <a href="articles.php" class="text-gray-500 hover:text-purple-600 text-sm flex items-center gap-2">
+            <a href="<?= $login ? 'articles.php' : 'index.php' ?>" class="text-gray-500 hover:text-purple-600 text-sm flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Retour
             </a>
         </div>
@@ -176,7 +175,7 @@ try {
                                     <?= nl2br(htmlspecialchars($com['contenu'])) ?>
                                 </p>
 
-                                <?php if($com['user_id'] == $current_user_id): ?>
+                                <?php if($com['user_id'] == null): ?>
                                     <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <a href="?id=<?= $id_article ?>&edit_id=<?= $com['id_comnt'] ?>#comments-form" 
                                            class="text-gray-400 hover:text-blue-600 text-xs bg-white px-2 py-1 rounded border shadow-sm">
