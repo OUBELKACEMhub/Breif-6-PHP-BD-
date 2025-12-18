@@ -1,6 +1,9 @@
 <?php
-include "db.php";
 
+
+include "db.php";
+session_start();
+$role=$_SESSION['role'];
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     try {
@@ -16,6 +19,7 @@ if (isset($_GET['delete'])) {
         die("Erreur de suppression : " . $e->getMessage());
     }
 }
+
 
 try {
     $sql = "SELECT postes.*, users.username                  
@@ -114,22 +118,28 @@ try {
                         <i class="fa-solid fa-file-lines"></i> Articles
                     </a>
                 </li>
-                <li>
-                    <a href="comments.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
-                        <i class="fa-regular fa-comments"></i> Comments
-                    </a>
-                </li>
+                
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
+                    <li>
+                        <a href="comments.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
+                            <i class="fa-regular fa-comments"></i> Comments
+                        </a>
+                    </li>
+                    <?php  endif;  ?>
             </ul>
              <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
-            <ul class="px-3">
+             <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "admin"): ?>
+                    <ul class="px-3">
                 <li><a href="users.php" class="flex items-center gap-3 p-3 hover:text-white rounded-lg"><i class="fa-solid fa-users"></i> Users</a></li>
             </ul>
+                    <?php  endif;  ?>
+           
         </nav>
         <div class="p-4 border-t border-gray-700">
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-10 h-10 rounded-full bg-blue-100">
                 <div class="overflow-hidden">
-                    <h4 class="text-sm font-white text-white">Admin</h4>
+                    <h4 class="text-sm font-white text-white"><?= $role ?></h4>
                 </div>
                 <a href="login.php">
                 <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
@@ -148,9 +158,11 @@ try {
         <div class="flex-1 overflow-y-auto p-8">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-semibold text-gray-800">Articles Gallery</h1>
+                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
                 <a href="addArticle.php" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-plus"></i> Create Article
                 </a>
+                <?php endif; ?>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -189,15 +201,26 @@ try {
                             <i class="fa-regular fa-calendar text-gray-400"></i>
                             <span><?= date('d M Y', strtotime($article['date_cr'])) ?></span>
                         </div>
+                         <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
 
                             <div class="flex items-center gap-2">
-                                <a href="editArticle.php?id=<?= $article['id_artc'] ?>" class="w-8 h-8 rounded bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Edit">
+                                
+                                <a href="editArticle.php?id=<?= $article['id_artc'] ?>" 
+                                class="w-8 h-8 rounded bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" 
+                                title="Edit">
                                     <i class="fa-solid fa-pencil"></i>
                                 </a>
-                                <a href="articles.php?delete=<?= $article['id_artc'] ?>" onclick="return confirm('Supprimer cet article ?')" class="w-8 h-8 rounded bg-pink-50 text-pink-500 hover:bg-pink-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Delete">
+
+                                <a href="articles.php?delete=<?= $article['id_artc'] ?>" 
+                                onclick="return confirm('Supprimer cet article ?')" 
+                                class="w-8 h-8 rounded bg-pink-50 text-pink-500 hover:bg-pink-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" 
+                                title="Delete">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </a>
+                                
                             </div>
+
+                        <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -205,6 +228,8 @@ try {
             </div>
 
         </div>
+
+      
     </main>
 
     <script src="blog.js"></script>

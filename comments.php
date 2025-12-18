@@ -1,5 +1,7 @@
 <?php
 include "db.php";
+session_start();
+$role=$_SESSION['role'];
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     try {
@@ -121,7 +123,7 @@ try {
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-10 h-10 rounded-full bg-blue-100">
                 <div class="overflow-hidden">
-                    <h4 class="text-sm font-white text-white">Admin</h4>
+                    <h4 class="text-sm font-white text-white"><?= $role ?></h4>
                 </div>
                     <a href="login.php">
                     <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>

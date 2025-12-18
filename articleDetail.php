@@ -62,6 +62,7 @@ try {
     $stmtCom->execute([$id_article]);
     $comments = $stmtCom->fetchAll(PDO::FETCH_ASSOC);
 
+
     if (isset($_GET['edit_id'])) {
         $edit_id = intval($_GET['edit_id']);
         $stmtEdit = $pdo->prepare("SELECT * FROM comments WHERE id_comnt = ? AND user_id = ?");
@@ -188,7 +189,7 @@ try {
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p class="text-gray-500 italic text-center py-4">Soyez le premier à commenter cet article !</p>
-                    <p><?=  ?></p>
+                    
                 <?php endif; ?>
             </div>
 
@@ -228,6 +229,7 @@ try {
             </div>
 
         </div>
+
 
     </main>
 </body>

@@ -28,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_id'] = $user['user_id']; 
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['email'] = $user['email'];
+                    $_SESSION['role'] = $user['role'];
                 
                     header("Location: articles.php");
                     exit;

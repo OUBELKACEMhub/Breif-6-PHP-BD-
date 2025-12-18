@@ -1,6 +1,7 @@
 <?php
 include "db.php";
-
+session_start();
+$role=$_SESSION['role'];
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     try {
@@ -154,22 +155,24 @@ try {
                         <i class="fa-solid fa-file-lines"></i> Articles
                     </a>
                 </li>
-                <li>
-                    <a href="comments.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
-                        <i class="fa-regular fa-comments"></i> Comments
-                    </a>
-                </li>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
+                    <li>
+                        <a href="comments.php" class="flex items-center gap-3 p-3 hover:text-white transition-colors pl-8">
+                            <i class="fa-regular fa-comments"></i> Comments
+                        </a>
+                    </li>
+                    <?php  endif;  ?>
             </ul>
              <div class="mt-4 px-6 mb-2 text-xs uppercase text-gray-500 font-semibold">Modules</div>
             <a href="users.php" class="menu-item active11 flex items-center gap-3 p-3 font-medium pl-8 w-[calc(100%+1.5rem)]">
-                        <i class="fa-solid fa-file-lines"></i> Articles
+                        <i class="fa-solid fa-solid fa-users"></i> Users
                     </a>
         </nav>
         <div class="p-4 border-t border-gray-700">
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="w-10 h-10 rounded-full bg-blue-100">
                 <div class="overflow-hidden">
-                    <h4 class="text-sm font-white text-white">Admin</h4>
+                    <h4 class="text-sm font-white text-white"><?= $role ?></h4>
                 </div>
                 <a href="login.php">
                 <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
