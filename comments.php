@@ -25,6 +25,7 @@ try {
     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $comments = [];
+    
 }
 ?>
 <!DOCTYPE html>
