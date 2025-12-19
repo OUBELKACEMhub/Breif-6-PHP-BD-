@@ -1,13 +1,18 @@
 <?php
+session_start(); // CORRECTION 1 : Toujours démarrer la session en premier !
 include "db.php";
-$login_error = null;
-$error = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$login_error = null;
+
+// --- LOGIQUE DE DECONNEXION ---
+// Si l'utilisateur est connecté, on le redirige vers le dashboard ou on affiche le profil
+// Pas besoin de traiter le login s'il est déjà connecté.
+
+// --- TRAITEMENT DU FORMULAIRE DE LOGIN ---
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_btn'])) {
     
     $email = trim($_POST['email']);
     $password = $_POST['password'];
-
 
     if (!empty($email) && !empty($password)) {
         try {
@@ -16,46 +21,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                
+                // Vérification du mot de passe
+                // Note: Si tes mots de passe sont hachés, utilise password_verify($password, $user['pass_word'])
                 if ($password === $user['pass_word']) { 
                     
+                    // Stockage des infos en session
                     $_SESSION['user_id'] = $user['user_id']; 
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['role'] = $user['role'];
                 
+                    // Redirection vers le dashboard
                     header("Location: articles.php");
                     exit;
                 } else {
-                    $error = "Mot de passe incorrect.";
+                    $login_error = "Mot de passe incorrect.";
                 }
             } else {
-                $error = "Aucun compte trouvé avec cet email.";
+                $login_error = "Aucun compte trouvé avec cet email.";
             }
         } catch (PDOException $e) {
-            $error = "Erreur de connexion : " . $e->getMessage();
+            $login_error = "Erreur de connexion : " . $e->getMessage();
         }
     } else {
-        $error = "Veuillez remplir tous les champs.";
+        $login_error = "Veuillez remplir tous les champs.";
     }
 }
-try {
 
+// --- STATISTIQUES ---
+try {
     $stmtCount = $pdo->query("SELECT COUNT(*) FROM postes");
     $totalArticles = $stmtCount->fetchColumn();
 
-
     $stmtViews = $pdo->query("SELECT SUM(view_count) FROM postes");
     $totalViews = $stmtViews->fetchColumn();
-
     
     $stmtCats = $pdo->query("SELECT COUNT(*) FROM category");
     $totalCats = $stmtCats->fetchColumn();
-
 } catch (PDOException $e) {
     $totalArticles = 0; $totalViews = 0; $totalCats = 0;
 }
 
+// --- RECUPERATION DES ARTICLES ---
 try {
     $sql = "SELECT p.*, u.username, c.nom_cat 
             FROM postes p 
@@ -80,7 +87,6 @@ try {
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="text-gray-800">
@@ -197,7 +203,7 @@ try {
                                 </div>
                             <?php endif; ?>
 
-                            <form method="POST" action="index.php.php.php.php.php">
+                            <form method="POST" action="">
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -227,55 +233,27 @@ try {
 
                     <?php else: ?>
                         <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6 text-center">
-                           
-        <form method="POST" action="">
-            <div class="mb-5">
-                <label class="block text-gray-700 text-sm font-medium mb-2">
-                    E-mail <span class="text-red-500">*</span>
-                </label>
-                <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="example@bookshine.com"
-                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all text-sm placeholder-gray-400"
-                    required
-                >
-            </div>
-
-            <div class="mb-5">
-                <label class="block text-gray-700 text-sm font-medium mb-2">
-                    Password <span class="text-red-500">*</span>
-                </label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    placeholder="••••••••"
-                    class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all text-sm placeholder-gray-400"
-                    required
-                >
-            </div>
-
-            <div class="flex items-center mb-6">
-                <input 
-                    id="remember" 
-                    name="remember"
-                    type="checkbox" 
-                    class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
-                >
-                <label for="remember" class="ml-2 block text-sm text-gray-600 cursor-pointer">
-                    Remember me
-                </label>
-            </div>
-
-            <button 
-                type="submit" 
-                class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-medium py-3 rounded-lg transition-colors shadow-md text-sm"
-            >
-                Log in
-            </button>
-        </form>
-     </div>
+                            <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 p-1 mb-4">
+                                <div class="w-full h-full rounded-full bg-white flex items-center justify-center text-2xl font-bold text-gray-700 uppercase">
+                                    <?= substr($_SESSION['username'], 0, 1) ?>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800"><?= htmlspecialchars($_SESSION['username']) ?></h3>
+                            <span class="inline-block bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full uppercase font-bold mt-2 mb-4">
+                                <?= $_SESSION['role'] ?>
+                            </span>
+                            
+                            <div class="space-y-2">
+                                <?php if($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author'): ?>
+                                <a href="articles.php" class="block w-full bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium py-2 rounded-lg border border-gray-200 transition">
+                                    <i class="fa-solid fa-gauge mr-2"></i> Dashboard
+                                </a>
+                                <?php endif; ?>
+                                <a href="logout.php" class="block w-full bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 rounded-lg border border-red-100 transition">
+                                    <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Déconnexion
+                                </a>
+                            </div>
+                        </div>
                     <?php endif; ?>
 
                     <div class="mt-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
