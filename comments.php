@@ -205,13 +205,17 @@ try {
                                 </td>
 
 
+
+                                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author" && $_SESSION['user_id']==$comment['user_id']  ):  ?>
+
                                 <td class="p-4 text-right">
                                     <a href="comments.php?delete=<?= $comment['id_comnt'] ?>" 
                                        onclick="return confirm('Are you sure you want to delete this comment?')"
                                        class="inline-flex w-8 h-8 rounded bg-pink-500 text-white hover:bg-pink-600 items-center justify-center shadow-sm">
                                         <i class="fa-regular fa-trash-can"></i>
-                                    </a>
+                                    </a>  
                                 </td>
+                                 <?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

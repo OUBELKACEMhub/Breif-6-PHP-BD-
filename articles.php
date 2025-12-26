@@ -141,7 +141,7 @@ try {
                 <div class="overflow-hidden">
                     <h4 class="text-sm font-white text-white"><?= $role ?></h4>
                 </div>
-                <a href="">
+                <a href="logout.php">
                 <button class="ml-auto text-gray-500 hover:text-red-400"><i class="fa-solid fa-power-off"></i></button>
                 </a>
             </div>
@@ -201,7 +201,7 @@ try {
                             <i class="fa-regular fa-calendar text-gray-400"></i>
                             <span><?= date('d M Y', strtotime($article['date_cr'])) ?></span>
                         </div>
-                         <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author"): ?>
+                         <?php if (isset($_SESSION['role']) && $_SESSION['role'] == "author" && $_SESSION['user_id']==$article['user_id']  ):  ?>
 
                             <div class="flex items-center gap-2">
                                 

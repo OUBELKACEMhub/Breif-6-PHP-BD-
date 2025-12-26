@@ -1,6 +1,5 @@
 <?php
 include "db.php";
-
 if (!isset($_GET['id'])) {
     header("Location: articles.php");
     exit;
@@ -19,19 +18,23 @@ if (!$article) {
 
 
 $users = $pdo->query("SELECT user_id, username FROM users")->fetchAll();
+$category =$pdo->query("SELECT nom_cat,id_cat FROM category")->fetchAll();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $image_url = $_POST['image_url'];
     $user_id = $_POST['user_id'];
+    $contenu = $_POST['content'];
+    $category=$_POST['cat_id'];
     
     try {
-        $sql = "UPDATE postes SET title = :title, image_url = :image, user_id = :user WHERE id_artc = :id";
-        $stmt = $pdo->prepare($sql);
+$sql = "UPDATE postes SET title = :title, image_url = :image, content = :content, id_cat = :category WHERE id_artc = :id";   
+     $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':title' => $title,
             ':image' => $image_url,
-            ':user' => $user_id,
+            ':content' => $contenu,
+            ':category'=>$category,
             ':id' => $id
         ]);
         header("Location: articles.php");
@@ -73,17 +76,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" name="image_url" value="<?= htmlspecialchars($article['image_url']) ?>" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
                 <div class="mt-2 text-xs text-gray-500">Aperçu : <img src="<?= htmlspecialchars($article['image_url']) ?>" class="h-10 inline rounded"></div>
             </div>
-
+             <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">Contenu</label>
+            <textarea name="content" rows="4" required
+                        class="w-full px-4 py-3 pb-14 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none resize-none transition-all placeholder-gray-400"
+                        placeholder="Partagez votre avis..."><?= $article['content'] ?>
+            </textarea>
+          </div>
+            
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-medium mb-2">Auteur</label>
-                <select name="user_id" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none bg-white">
-                    <?php foreach($users as $user): ?>
-                        <option value="<?= $user['user_id'] ?>" <?= ($user['user_id'] == $article['user_id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($user['username']) ?>
-                        </option>
+                <label class="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                <select name="cat_id" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none bg-white">
+                    <option value="">Sélectionner un category</option>
+                    <?php foreach($category as $cat): ?>
+                        <option value="<?= $cat['id_cat'] ?>"><?= htmlspecialchars($cat['nom_cat']) ?></option>
                     <?php endforeach; ?>
                 </select>
-            </div>
+            </div> 
 
             <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition-colors shadow-md">
                 Mettre à jour

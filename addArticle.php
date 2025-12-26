@@ -1,20 +1,22 @@
 <?php
 include "db.php";
+session_start();
 
-$users = $pdo->query("SELECT user_id, username FROM users")->fetchAll();
+$category = $pdo->query("SELECT id_cat,nom_cat FROM category")->fetchAll();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $image_url = $_POST['image_url'];
-    $user_id = $_POST['user_id'];
-    
+    $user_id = $_SESSION['user_id'];
+    $contenu = $_POST['contenu'];
     try {
-        $sql = "INSERT INTO postes (title, image_url, user_id, status, view_count) VALUES (:title, :image, :user, 1, 0)";
+        $sql = "INSERT INTO postes (title, image_url, user_id,content, status, view_count) VALUES (:title, :image, :user,:contenu, 1, 0)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':title' => $title,
             ':image' => $image_url,
-            ':user' => $user_id
+            ':user' => $user_id,
+            ':contenu' => $contenu
         ]);
         header("Location: articles.php");
         exit;
@@ -22,6 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Erreur : " . $e->getMessage();
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,18 +56,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Image URL</label>
-                <input type="text" name="image_url" placeholder="https://..." required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
+                <input type="text" name="image_url" placeholder="https://..." required class="w-full  px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
             </div>
+
+            <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-2">Contenu</label>
+            <textarea name="contenu" rows="4" required
+                        class="w-full px-4 py-3 pb-14 rounded-lg border border-gray-300 bg-gray-50 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none resize-none transition-all placeholder-gray-400"
+                        placeholder="Partagez votre avis...">
+            </textarea>
+          </div>
+            
 
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-medium mb-2">Auteur</label>
                 <select name="user_id" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none bg-white">
-                    <option value="">Sélectionner un auteur</option>
-                    <?php foreach($users as $user): ?>
-                        <option value="<?= $user['user_id'] ?>"><?= htmlspecialchars($user['username']) ?></option>
+                    <option value="">Sélectionner un category</option>
+                    <?php foreach($category as $cat): ?>
+                        <option value="<?= $cat['id_cat'] ?>"><?= htmlspecialchars($cat['nom_cat']) ?></option>
                     <?php endforeach; ?>
                 </select>
-            </div>
+            </div> 
 
             <button type="submit" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-medium py-3 rounded-lg transition-colors shadow-md">
                 Enregistrer l'article

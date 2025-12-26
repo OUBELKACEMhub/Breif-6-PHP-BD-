@@ -1,14 +1,11 @@
 <?php
-session_start(); // CORRECTION 1 : Toujours démarrer la session en premier !
+session_start();
+session_unset(); 
 include "db.php";
 
 $login_error = null;
 
-// --- LOGIQUE DE DECONNEXION ---
-// Si l'utilisateur est connecté, on le redirige vers le dashboard ou on affiche le profil
-// Pas besoin de traiter le login s'il est déjà connecté.
 
-// --- TRAITEMENT DU FORMULAIRE DE LOGIN ---
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_btn'])) {
     
     $email = trim($_POST['email']);
@@ -21,17 +18,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_btn'])) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
-                // Vérification du mot de passe
-                // Note: Si tes mots de passe sont hachés, utilise password_verify($password, $user['pass_word'])
                 if ($password === $user['pass_word']) { 
                     
-                    // Stockage des infos en session
+                
                     $_SESSION['user_id'] = $user['user_id']; 
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['role'] = $user['role'];
+                    
                 
-                    // Redirection vers le dashboard
                     header("Location: articles.php");
                     exit;
                 } else {
@@ -48,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login_btn'])) {
     }
 }
 
-// --- STATISTIQUES ---
 try {
     $stmtCount = $pdo->query("SELECT COUNT(*) FROM postes");
     $totalArticles = $stmtCount->fetchColumn();
@@ -62,7 +56,6 @@ try {
     $totalArticles = 0; $totalViews = 0; $totalCats = 0;
 }
 
-// --- RECUPERATION DES ARTICLES ---
 try {
     $sql = "SELECT p.*, u.username, c.nom_cat 
             FROM postes p 

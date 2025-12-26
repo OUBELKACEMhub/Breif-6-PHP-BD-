@@ -6,9 +6,8 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 }
 session_start(); 
 $login = $_SESSION['user_id'] ?? null;
-
+$username = $_SESSION['username'] ?? null;
 $id_article = intval($_GET['id']);
-
 $edit_comment = null;
 try {
     
@@ -17,7 +16,7 @@ try {
         
         if (!empty($contenu)) {
             $stmt = $pdo->prepare("INSERT INTO comments (Date_cr, contenu, statues, user_id, id_artc) VALUES (NOW(), ?, 'active', ?, ?)");
-            $stmt->execute([$contenu, null, $id_article]);
+            $stmt->execute([$contenu, $login , $id_article]);
             
             header("Location: ?id=" . $id_article . "#comments-section");
             exit;
@@ -49,7 +48,7 @@ try {
     $article = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$article) {
-        die("Erreur: Article makaynch.");
+        die("Erreur: Article inrouvable");
     }
 
     $sqlCom = "SELECT c.*, u.username 
